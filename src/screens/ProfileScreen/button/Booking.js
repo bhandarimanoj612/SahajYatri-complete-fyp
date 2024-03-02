@@ -1,0 +1,123 @@
+import { StyleSheet, Text, Image, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TouchableOpacity } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { FlatList } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+// import { HeartIcon } from "react-native-heroicons/solid";
+import { useNavigation } from "@react-navigation/native";
+import { placeData } from "../../../Dummy/PlaceList";
+import axios from "axios";
+import { BASE_URL } from "../../utils/config";
+import randomImage from "../../../../assets/images/Budget/randomImage";
+
+// create a component
+const Booking = () => {
+  // const [favouriteIndexes, setFavouriteIndexes] = useState([]);
+  const navigation = useNavigation();
+
+  // const toggleFavourite = (index) => {
+  //   if (favouriteIndexes.includes(index)) {
+  //     setFavouriteIndexes((prevIndexes) =>
+  //       prevIndexes.filter((i) => i !== index)
+  //     );
+  //   } else {
+  //     setFavouriteIndexes((prevIndexes) => [...prevIndexes, index]);
+  //   }
+  // };
+
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const fetchBookings = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}HotelBooking/user/Manoj`);
+      setBookings(response.data);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    }
+  };
+  return (
+    <View className="bg-white   dark:bg-neutral-950 " style={{ height: 430 }}>
+      <FlatList
+        data={bookings}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item, index }) => {
+          // const isFavouri
+          // te = favouriteIndexes.includes(index);
+          return (
+            <View className="p-3 rounded-2xl mt-6 m-2 mb-24 dark:bg-neutral-900">
+              {console.log(index)}
+              <TouchableOpacity
+                styles={styles.Shadow}
+                style={{ height: wp(50), width: wp(40) }}
+                className="flex justify-end relative p-4 py-6 space-y-2 mb-5"
+                onPress={() => {
+                  navigation.navigate("BookingDetails", { item });
+                }}
+              >
+                <Image
+                  //   styles={styles.Shadow}
+                  source={randomImage()}
+                  className="absolute "
+                  style={{
+                    height: wp(50),
+                    width: wp(40),
+                    borderRadius: wp(5),
+                  }}
+                />
+                {/* For making color look visible */}
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.8)"]}
+                  style={{
+                    width: wp(40),
+                    height: hp(20),
+                    borderBottomLeftRadius: 22,
+                    borderBottomRightRadius: 22,
+                  }}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  className="absolute bottom-0"
+                />
+                {/* <TouchableOpacity
+                  className="absolute top-0 right-1 p-3 rounded-full"
+                  onPress={() => toggleFavourite(index)}
+                >
+                  <HeartIcon
+                    size={wp(5)}
+                    color={isFavourite ? "red" : "white"}
+                  />
+                </TouchableOpacity> */}
+                <Text
+                  style={{ fontSize: wp(4) }}
+                  className="text-white font-extrabold "
+                >
+                  {item.hotelName}
+                </Text>
+                <Text
+                  style={{ fontSize: wp(3) }}
+                  className="text-white font-light "
+                >
+                  {item.totalPrice}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+      />
+    </View>
+  );
+};
+
+// define your styles
+const styles = StyleSheet.create({});
+
+//make this component available to the app
+export default Booking;
