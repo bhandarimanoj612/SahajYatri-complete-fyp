@@ -11,9 +11,9 @@ const KeyboardAvodingContainer = ({ children, style }) => {
   //content of the screen we want to take in children properties and pass
   //below return button
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{}} className="dark:bg-neutral-800">
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{}}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ScrollView
@@ -28,7 +28,6 @@ const KeyboardAvodingContainer = ({ children, style }) => {
 };
 const styles = StyleSheet.create({
   containContainer: {
-    padding: 2,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 0 : 0,
   },
 });

@@ -19,6 +19,8 @@ import OfferScreen from "./OfferScreen";
 import SearchComponent from "../../components/SearchComponent";
 import SearchResultScreen from "./SearchResultScreen";
 import { useNavigation } from "@react-navigation/native";
+import AllScreen from "./Popular/AllScreen";
+import VirtualizedScrollView from "../../components/VirtualizedScrollView";
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [isSearching, setIsSearching] = useState(false);
@@ -37,7 +39,8 @@ const HomeScreen = () => {
     }
   };
   return (
-    <View style={{ flex: 1 }} className="dark:bg-neutral-950">
+    // for avoding virtual listed should i used custome virtualized scroll componentes
+    <VirtualizedScrollView className="dark:bg-neutral-950">
       <SearchComponent
         setIsSearching={setIsSearching}
         onSearch={setSearchResults}
@@ -48,7 +51,7 @@ const HomeScreen = () => {
           setIsSearching={setIsSearching}
         />
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+        <View showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           {/* Content of your home screen when not searching */}
           <View>
             <OfferScreen />
@@ -99,16 +102,73 @@ const HomeScreen = () => {
               {viewMode == "popular"} &&<View>{}</View>
               {viewMode == "recommended"} &&<View>{}</View> */}
             </View>
+            {/* Travels */}
+            <Text
+              className="text-black font-extralight rounded-2xl m-6 dark:text-white"
+              style={{
+                paddingLeft: wp(2),
+                fontSize: wp(4),
+                borderColor: "white",
+                borderWidth: 1,
+                shadowColor: "grey",
+                shadowRadius: 1,
+                borderRadius: 12,
+                shadowOpacity: 1,
+                overflow: "visible",
+                shadowOffset: { width: 1, height: 1 },
+              }}
+            >
+              Travel Destination
+            </Text>
             <TravelPlaces />
+            {/* hotel */}
+            <Text
+              className="text-black font-extralight rounded-2xl m-6 dark:text-white"
+              style={{
+                paddingLeft: wp(2),
+                fontSize: wp(4),
+                borderColor: "white",
+                borderWidth: 1,
+                shadowColor: "grey",
+                shadowRadius: 1,
+                borderRadius: 12,
+                shadowOpacity: 1,
+                overflow: "visible",
+                shadowOffset: { width: 1, height: 1 },
+              }}
+            >
+              Hotels
+            </Text>
             <Hotel />
 
-            <View className="mb-20">
+            <View>
+              <Text
+                className="text-black font-extralight rounded-2xl m-6 dark:text-white"
+                style={{
+                  paddingLeft: wp(2),
+                  fontSize: wp(4),
+                  borderColor: "white",
+                  borderWidth: 1,
+                  shadowColor: "grey",
+                  shadowRadius: 1,
+                  borderRadius: 12,
+                  shadowOpacity: 1,
+                  overflow: "visible",
+                  shadowOffset: { width: 1, height: 1 },
+                }}
+              >
+                Vehicle
+              </Text>
               <Vehicle />
             </View>
+            {/* Recommedaded */}
+            <View>
+              <AllScreen />
+            </View>
           </View>
-        </ScrollView>
+        </View>
       )}
-    </View>
+    </VirtualizedScrollView>
   );
 };
 

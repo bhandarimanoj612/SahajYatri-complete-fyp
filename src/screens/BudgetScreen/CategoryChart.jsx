@@ -5,6 +5,7 @@ import { VictoryPie } from "victory-native";
 import axios from "axios";
 import { BASE_URL } from "../utils/config";
 import { AuthContext } from "../../Context/AuthContext";
+import EmptyChart from "../../components/emptyChart";
 //refernces for pie chart doc https://commerce.nearform.com/open-source/victory/docs/victory-pie
 // create a component
 const CategoryChart = ({ email }) => {
@@ -67,60 +68,74 @@ const CategoryChart = ({ email }) => {
     "#FF6347", // Tomato
   ];
 
+  const renderPieChart = () => {
+    if (chartData.length === 0) {
+      return (
+        <View>
+          <EmptyChart />
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <VictoryPie
+            animate={{ duration: 4000, easing: "exp" }}
+            data={chartData}
+            labels={({ datum }) => `${datum.x}`} // for making the chart dunot shape
+            radius={({ datum }) =>
+              selectedCategory === datum.x
+                ? SIZES.width * 0.4
+                : SIZES.width * 0.4 - 10
+            }
+            innerRadius={70}
+            labelRadius={(
+              { innerRadius } //for adding radius to the chart
+            ) => (SIZES.width * 0.4 + innerRadius) / 2.5}
+            style={{
+              labels: {
+                fill: "black",
+                fontSize: 12,
+                fontStyle: "italic",
+              },
+              parent: {
+                ...styles.shadow,
+              },
+            }}
+            width={SIZES.width}
+            height={SIZES.width}
+            colorScale={colorScales}
+            events={[
+              {
+                target: "data",
+                eventHandlers: {
+                  onPress: () => {
+                    return [
+                      {
+                        target: "labels",
+                        mutation: (props) => {
+                          const categoryName = chartData[props.index].x;
+                          setSelectedCategory(categoryName);
+                        },
+                      },
+                    ];
+                  },
+                },
+              },
+            ]}
+          />
+        </View>
+      );
+    }
+  };
   return (
-    <ScrollView>
+    <ScrollView className="dark:bg-neutral-800  mb-60">
       <View style={styles.container}>
         <View className="flex flex-row "></View>
         {/* date of the month with year  */}
         {/* horizontal line */}
         <View className=" m-4">
-          <View>
-            <VictoryPie
-              animate={{ duration: 4000, easing: "exp" }}
-              data={chartData}
-              labels={({ datum }) => `${datum.x}`} // for making the chart dunot shape
-              radius={({ datum }) =>
-                selectedCategory === datum.x
-                  ? SIZES.width * 0.4
-                  : SIZES.width * 0.4 - 10
-              }
-              innerRadius={70}
-              labelRadius={(
-                { innerRadius } //for adding radius to the chart
-              ) => (SIZES.width * 0.4 + innerRadius) / 2.5}
-              style={{
-                labels: {
-                  fill: "black",
-                  fontSize: 12,
-                  fontStyle: "italic",
-                },
-                parent: {
-                  ...styles.shadow,
-                },
-              }}
-              width={SIZES.width}
-              height={SIZES.width}
-              colorScale={colorScales}
-              events={[
-                {
-                  target: "data",
-                  eventHandlers: {
-                    onPress: () => {
-                      return [
-                        {
-                          target: "labels",
-                          mutation: (props) => {
-                            const categoryName = chartData[props.index].x;
-                            setSelectedCategory(categoryName);
-                          },
-                        },
-                      ];
-                    },
-                  },
-                },
-              ]}
-            />
-          </View>
+          {/* Render the pie chart conditionally */}
+          {renderPieChart()}
         </View>
       </View>
     </ScrollView>
@@ -132,6 +147,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    borderEndEndRadius: 40,
   },
 });
 

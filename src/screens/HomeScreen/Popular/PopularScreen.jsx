@@ -27,13 +27,16 @@ const PopularScreen = () => {
 
   const fetchPopularHotels = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}HotelList/popular`);
+      const response = await axios.get(`${BASE_URL}Search/popular`);
       setPopularHotels(response.data);
     } catch (error) {
       console.error("Error fetching popular hotels: ", error);
     }
   };
 
+  // Assuming 'results' contains 'hotels', 'travel', and 'vehicles' keys
+  const allResults = Object.values(popularHotels).flat(); // Combine all arrays into one
+  console.log(allResults);
   return (
     <View className="dark:bg-neutral-900">
       <StatusBar style={"black"} />
@@ -64,10 +67,10 @@ const PopularScreen = () => {
       </SafeAreaView>
       <View style={styles.container} className=" bg-[#fff] dark:bg-neutral-900">
         <FlatList
-          data={popularHotels}
+          data={allResults}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("HotelBook", { item })}
+              onPress={() => navigation.navigate("Bookings", { item })}
             >
               <View
                 style={styles.hotelContainer}
@@ -88,7 +91,7 @@ const PopularScreen = () => {
               </View>
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => `${item.id}_${typeof item}_${index}`} //for making warnning remove
         />
       </View>
     </View>

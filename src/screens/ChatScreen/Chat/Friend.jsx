@@ -1,5 +1,3 @@
-// FriendsScreen.js
-
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -17,6 +15,7 @@ import { ChevronDoubleLeftIcon } from "react-native-heroicons/outline";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Chat_Url } from "../../utils/config";
 import { StatusBar } from "expo-status-bar";
+
 const Friend = ({ navigation, route }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
@@ -48,91 +47,97 @@ const Friend = ({ navigation, route }) => {
   }, []);
 
   const handleStartChat = (recipient) => {
-    // navigation.navigate("PrivateMessage", {
-    navigation.navigate("ChatScreen", {
+    navigation.navigate("PrivateMessage", {
       sender: route.params.name,
-      recipient,
+      receiver: recipient,
     });
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="black" />
-      <View style={styles.container} className="dark:bg-neutral-900">
-        <TouchableOpacity
-          className="bg-gray-200 rounded-xl dark:bg-neutral-800"
-          onPress={() => navigation.goBack()}
-          style={{ padding: 5 }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <ChevronDoubleLeftIcon size={wp(6)} strokeWidth={4} color="black" />
-          </View>
-        </TouchableOpacity>
-        <Text className="font-bold text-2xl m-4 text-[#2B3384] ">Friends</Text>
+      <Text style={styles.title}>Friends</Text>
 
-        <FlatList
-          data={onlineUsers}
-          keyExtractor={(item) => item}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleStartChat(item)}
-              className="bg-white rounded-2xl m-3 items-center dark:bg-neutral-800"
+      <FlatList
+        data={onlineUsers}
+        keyExtractor={(item) => item}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => handleStartChat(item)}
+            style={styles.friendContainer}
+          >
+            <Image
+              source={randomImage()} // Use the randomImage function to get a random image
+              style={styles.avatar} // Adjust the dimensions as needed
+            />
+            <Text
+              style={[
+                styles.friendName,
+                item === route.params.name && styles.youText,
+              ]}
             >
-              <Image
-                source={randomImage()} // Use the randomImage function to get a random image
-                style={styles.avatar} // Adjust the dimensions as needed
-              />
-              <Text
-                style={[
-                  styles.friendName,
-                  item === route.params.name && styles.youText, // Apply different styles for "You"
-                ]}
-                className="font-Bold text-green-700"
-              >
-                {item === route.params.name ? "You" : item}
-              </Text>
-              {/* <Text className="bg-red-400">"hi"</Text> */}
-            </TouchableOpacity>
-          )}
-        />
-        <TouchableOpacity
-          className="rounded-2xl bg-[#2B3384] items-center"
-          onPress={() => navigation.navigate("GroupPage")}
-        >
-          <Text className="text-white p-5 font-bold  text-xl">Gobal Chat</Text>
-        </TouchableOpacity>
-      </View>
+              {item === route.params.name ? "You" : item}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+      <TouchableOpacity
+        style={styles.globalChatButton}
+        onPress={() => navigation.navigate("GroupPage")}
+      >
+        <Text style={styles.globalChatButtonText}>Global Chat</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // borderColor: "#D8D5D5",
-    // borderWidth: 1,
-    // shadowColor: "black",
-    // shadowRadius: 1,
-    // shadowOpacity: 1,
-    // overflow: "visible",
-    // shadowOffset: { width: 1, height: 1 },
-    // marginBottom: 50,
-    height: 795,
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#ffffff",
+  },
+  backButton: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#2B3384",
+  },
+  friendContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
   },
   avatar: {
-    width: 100,
+    width: 50,
     height: 50,
-    borderRadius: 40,
-    marginBottom: 5,
+    borderRadius: 25,
+    marginRight: 20,
   },
   friendName: {
-    fontSize: 15,
-
-    textAlign: "center",
+    fontSize: 18,
+    color: "#000000",
   },
   youText: {
-    color: "blue", // Change color as needed
-    // Add more styles if required
+    color: "#00f", // Change color as needed
+    fontWeight: "bold",
+  },
+  globalChatButton: {
+    backgroundColor: "#2B3384",
+    borderRadius: 10,
+    paddingVertical: 15,
+    alignItems: "center",
+  },
+  globalChatButtonText: {
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

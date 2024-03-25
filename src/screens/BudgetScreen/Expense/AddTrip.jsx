@@ -64,8 +64,8 @@ const AddTrip = ({ email }) => {
           style={{
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
-            borderColor: "#6E6C6C",
-            borderWidth: 1,
+            // borderColor: "#6E6C6C",
+            // borderWidth: 1,
             overflow: "visible",
             shadowColor: "black",
             shadowRadius: 1,
@@ -99,7 +99,6 @@ const AddTrip = ({ email }) => {
           />
           <TouchableOpacity
             style={{
-              backgroundColor: "#2B3384",
               height: wp(15),
               width: wp(50),
             }}
@@ -108,7 +107,7 @@ const AddTrip = ({ email }) => {
                 handleAddTrip();
               }
             }}
-            className="mb-6 mx-auto flex justify-center items-center rounded-full mt-28 "
+            className="bg-[#2B3384] dark:bg-neutral-950 mb-9 mx-auto flex justify-center items-center rounded-full mt-28 "
           >
             <Text
               className="text-white font-bold"

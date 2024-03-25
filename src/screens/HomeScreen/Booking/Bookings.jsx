@@ -13,7 +13,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { MapPinIcon } from "react-native-heroicons/solid";
 import { Rating } from "react-native-ratings";
@@ -22,12 +22,19 @@ import { BASE_URL } from "../../utils/config";
 import { AuthContext } from "../../../Context/AuthContext";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import Hotel from "../Hotel";
+import LoginModal from "../../../components/LoginModal";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useColorScheme } from "nativewind";
+import TravelPlaces from "../TravelPlaces";
+import Vehicle from "../Vehicle";
 
-const HotelBook = ({ route, email }) => {
+const Bookings = ({ route, email }) => {
+  const { userName } = useContext(AuthContext);
   const { userInfo } = useContext(AuthContext);
   const { item } = route.params;
   const navigation = useNavigation();
-
+  const [showLoginModal, setShowLoginModal] = useState(false); // State to control modal visibility
   const [checkInDate, setCheckInDate] = useState(new Date());
   const [checkOutDate, setCheckOutDate] = useState(new Date());
   const [numberOfGuests, setNumberOfGuests] = useState(1);
@@ -35,11 +42,17 @@ const HotelBook = ({ route, email }) => {
     useState(false);
   const [isCheckOutDatePickerVisible, setCheckOutDatePickerVisibility] =
     useState(false);
+  const isFocused = useIsFocused();
+  const { colorScheme } = useColorScheme(); //for using react native dark mode with tailwind css
 
   useEffect(() => {
-    // Your useEffect code here, if any
-  }, []);
-
+    if (isFocused) {
+      // Show the login modal if user is not logged in or email is empty when the screen is focused
+      if (!userInfo || !userInfo.email) {
+        setShowLoginModal(true);
+      }
+    }
+  }, [isFocused]);
   const incrementGuests = () => {
     setNumberOfGuests((prevGuests) => prevGuests + 1);
   };
@@ -50,41 +63,162 @@ const HotelBook = ({ route, email }) => {
     }
   };
 
-  const displayAlert = () => {
-    Alert.alert(
-      "Success",
-      "Successfully booked",
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            navigation.goBack();
-            console.log(userInfo.email);
-          },
+  // Function to initiate Khalti payment
+  const initiateKhaltiPayment = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/KhaltiPayment`, {
+        customer_info: {
+          name: userName,
+          email: userInfo.email,
+          phone: 9876543210,
         },
-      ],
-      { cancelable: false }
-    );
+        amount: item.totalPrice,
+        purchase_order_name: item.name,
+        product_details: [
+          {
+            name: item.name,
+            total_price: item.totalPrice,
+          },
+        ],
+      });
+
+      console.log(response.data); // Log response for debugging
+
+      // Handle the response and redirect user accordingly
+    } catch (error) {
+      console.error("Error initiating Khalti payment:", error);
+      Alert.alert(
+        "Error",
+        "Failed to initiate payment. Please try again later."
+      );
+    }
   };
+  console.log(item.id, item.name);
+
+  const renderRecommendations = () => {
+    switch (item.category) {
+      case "HotelBooking":
+        return (
+          <View className="dark:bg-neutral-800">
+            <Text
+              className="text-black font-extralight rounded-2xl m-6 dark:text-white"
+              style={{
+                paddingLeft: wp(2),
+                fontSize: wp(4),
+                borderColor: "white",
+                borderWidth: 1,
+                shadowColor: "grey",
+                shadowRadius: 1,
+                borderRadius: 12,
+                shadowOpacity: 1,
+                overflow: "visible",
+                shadowOffset: { width: 1, height: 1 },
+              }}
+            >
+              Similar Hotel
+            </Text>
+            <Hotel />
+          </View>
+        );
+      case "VehicleBooking":
+        return (
+          <View className="dark:bg-neutral-800">
+            <Text
+              className="text-black font-extralight rounded-2xl m-6 dark:text-white"
+              style={{
+                paddingLeft: wp(2),
+                fontSize: wp(4),
+                borderColor: "white",
+                borderWidth: 1,
+                shadowColor: "grey",
+                shadowRadius: 1,
+                borderRadius: 12,
+                shadowOpacity: 1,
+                overflow: "visible",
+                shadowOffset: { width: 1, height: 1 },
+              }}
+            >
+              Similar Vehicle
+            </Text>
+            <Vehicle />
+          </View>
+        );
+      case "TravelBooking":
+        return (
+          <View className="dark:bg-neutral-800">
+            <Text
+              className="text-black font-extralight rounded-2xl m-6 dark:text-white"
+              style={{
+                paddingLeft: wp(2),
+                fontSize: wp(4),
+                borderColor: "white",
+                borderWidth: 1,
+                shadowColor: "grey",
+                shadowRadius: 1,
+                borderRadius: 12,
+                shadowOpacity: 1,
+                overflow: "visible",
+                shadowOffset: { width: 1, height: 1 },
+              }}
+            >
+              Similar Travel Destination
+            </Text>
+            <TravelPlaces />
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+  // const handleBooking = async () => {
+  //   try {
+  //     if (userInfo && userInfo.email) {
+  //       const response = await axios.post(`${BASE_URL}${item.category}`, {
+  //         name: item.name,
+  //         userName: userInfo.email,
+  //         startDate: checkInDate,
+  //         endDate: checkOutDate,
+  //         stripePaymentIntentID: "string",
+  //         totalPrice: 100,
+  //         numberOfGuests: numberOfGuests,
+  //       });
+  //       console.log(response.data, item.name, checkInDate, numberOfGuests);
+  //       displayAlert();
+  //     } else {
+  //       setShowLoginModal(true); // Show login modal if user is not logged in or email is empty
+  //       console.error("User information not available.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error booking:", error);
+  //   }
+  // };
 
   const handleBooking = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}HotelBooking`, {
-        hotelName: item.name,
-        userName: userInfo.email,
-        checkInDate: checkInDate,
-        checkOutDate: checkOutDate,
-        stripePaymentIntentID: "string",
-        totalPrice: 100,
-        numberOfGuests: numberOfGuests,
-      });
-      console.log(response.data, item.name, checkInDate, numberOfGuests);
-      displayAlert();
+      if (userInfo && userInfo.email) {
+        // Check if start date and end date are the same
+        if (checkInDate.getTime() === checkOutDate.getTime()) {
+          Alert.alert(
+            "Invalid Dates",
+            "Start and end dates cannot be the same. Please choose different dates."
+          );
+          return; // Exit function if dates are the same
+        }
+
+        // Navigate to PaymentScreen with booking data
+        navigation.navigate("PaymentScreen", {
+          item: item,
+          checkInDate: checkInDate.toISOString(), // Convert to ISO string
+          checkOutDate: checkOutDate.toISOString(), // Convert to ISO string
+          numberOfGuests: numberOfGuests,
+          image: item.image,
+          price: item.price,
+        });
+      } else {
+        setShowLoginModal(true); // Show login modal if user is not logged in or email is empty
+        console.error("User information not available.");
+      }
     } catch (error) {
-      console.log(item.name);
-      console.log(checkInDate);
-      console.log(checkOutDate);
-      console.log(numberOfGuests);
       console.error("Error booking:", error);
     }
   };
@@ -95,6 +229,13 @@ const HotelBook = ({ route, email }) => {
       className="space-y-5 dark:bg-neutral-900"
     >
       <View className="bg-white flex-1">
+        <LoginModal
+          visible={showLoginModal}
+          onPressLogin={() => {
+            setShowLoginModal(false); // Close login modal
+            navigation.navigate("LoginScreen"); // Navigate to login screen
+          }}
+        />
         <Image
           source={{ uri: item.image }}
           style={{ width: wp(100), height: hp(55) }}
@@ -105,20 +246,17 @@ const HotelBook = ({ route, email }) => {
         >
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="p-2 rounded-full ml-4"
+            className="p-2 rounded-full ml-4 dark:bg-black"
             style={{ backgroundColor: "rgba(255,255,255,0.5)" }}
           >
-            <ChevronLeftIcon size={wp(7)} strokeWidth={4} color="white" />
+            <ChevronLeftIcon size={wp(7)} strokeWidth={4} color="black" />
           </TouchableOpacity>
         </SafeAreaView>
         <View
           style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
           className="px-5 flex flex-1 justify-between bg-white pt-8 -mt-14 dark:bg-neutral-800"
         >
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            className="space-y-5"
-          >
+          <View showsVerticalScrollIndicator={false} className="space-y-5">
             <View className="flex-row justify-between items-start">
               <Text
                 style={{ fontSize: wp(7) }}
@@ -172,13 +310,24 @@ const HotelBook = ({ route, email }) => {
               >
                 Rating
               </Text>
+
               <Rating
+                tintColor={colorScheme === "dark" ? "#262626" : undefined} //this part of line is used to change the background of image
                 startingValue={item?.rating}
-                readonly={true}
+                // readonly={true}
                 imageSize={wp(5)}
-                className="dark:bg-black"
-                style={{ paddingVertical: 2, marginRight: 10 }}
+                // style={{ paddingVertical: 2, marginRight: 10 }}
               />
+
+              {/* <Rating
+                type="star"
+                ratingCount={5}
+                imageSize={30}
+                // onFinishRating={handleRating}
+                style={{ backgroundColor: "transparent" }}
+              /> */}
+
+              {console.log(colorScheme)}
               <Text
                 style={{ fontSize: wp(3.9) }}
                 className="text-black tracking-wide mb-2 dark:text-white "
@@ -214,10 +363,11 @@ const HotelBook = ({ route, email }) => {
                   />
                 </View>
                 <View className="flex-row justify-between mt-5">
-                  <Text className="font-bold mt-4 dark:text-white">
+                  <Text className="font-bold mt-4 dark:text-white ">
                     End Date
                   </Text>
                   <TouchableOpacity
+                    className="dark:bg-neutral-700"
                     onPress={() => setCheckOutDatePickerVisibility(true)}
                     style={{ marginTop: 10 }}
                   >
@@ -242,7 +392,7 @@ const HotelBook = ({ route, email }) => {
                     Start Date
                   </Text>
                   <RNDateTimePicker
-                    className="mt-10"
+                    className="mt-10 bg-light-50  dark:text-white "
                     value={checkInDate}
                     maximumDate={checkInDate}
                     mode="date"
@@ -253,13 +403,14 @@ const HotelBook = ({ route, email }) => {
                     }}
                   />
                 </View>
-                <View className="flex-row justify-between mt-5">
-                  <Text className="font-bold mt-4 dark:text-white">
+                <View className="flex-row justify-between mt-5 ">
+                  <Text className="font-bold mt-4 dark:text-white ">
                     End Date
                   </Text>
                   <RNDateTimePicker
                     value={checkOutDate}
-                    minimumDate={checkInDate}
+                    color="black"
+                    className="bg-light-50 dark:text-white"
                     mode="date"
                     display="default"
                     onChange={(event, selectedDate) => {
@@ -283,65 +434,52 @@ const HotelBook = ({ route, email }) => {
                   Number of Guests
                 </Text>
               </View>
-              <View className="mr-10 bg-gray-100 rounded-2xl">
+              <View className="flex-row justify-between  ">
                 <TouchableOpacity
                   onPress={incrementGuests}
-                  className="bg-[#2B3384] rounded-full mt-4  mb-2 p-1"
+                  className="bg-[#2B3384] rounded-full   m-2   dark:bg-black "
                 >
-                  <Text
-                    style={{ fontSize: 24, marginLeft: 10 }}
-                    className="text-white"
-                  >
-                    +
+                  <Text className="text-white">
+                    <Icon
+                      name="arrow-up-drop-circle-outline"
+                      size={40}
+                      color="white"
+                    />
                   </Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 24 }}>{numberOfGuests}</Text>
-
+                <View className="bg-gray-300 dark:bg-neutral-950  p-2 m-3 rounded-xl">
+                  <Text
+                    style={{ fontSize: 20 }}
+                    className=" dark:bg-neutral-900 dark:text-white"
+                  >
+                    {numberOfGuests}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   onPress={decrementGuests}
-                  className="bg-[#2B3384] rounded-full mt-4 mb-2 p-1"
+                  className="bg-[#2B3384] rounded-full m-2 dark:bg-black"
                 >
-                  <Text
-                    style={{ fontSize: 24, marginLeft: 10 }}
-                    className="text-white"
-                  >
-                    -
+                  <Text style={{}} className="text-white">
+                    <Icon
+                      name="arrow-down-drop-circle-outline"
+                      size={40}
+                      color="white"
+                    />
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
+          </View>
 
-            {/* Payment */}
-            <View
-              className="flex flex-row justify-between  mb-8 "
-              style={{ alignItems: "center" }}
-            >
-              <View className="m-2">
-                <Text className="font-bold mr-6 dark:text-white">Payment</Text>
-              </View>
-              <View className=" bg-gray-100 mr-5 rounded-2xl">
-                <TouchableOpacity
-                  // onPress={initiateKhaltiPayment}
-                  className="bg-[#2B3384] rounded-full  mb-2 "
-                >
-                  <Image
-                    source={require("../../../../assets/images/icons/khalti.png")}
-                  />
-                </TouchableOpacity>
-                <Text className="ml-4 font-bold">Khalti</Text>
-              </View>
-            </View>
-          </ScrollView>
           <TouchableOpacity
             style={{
-              backgroundColor: "#2B3384",
               height: wp(15),
               width: wp(50),
             }}
             onPress={() => {
               handleBooking();
             }}
-            className="mb-6 mx-auto flex justify-center items-center rounded-full"
+            className="bg-[#2B3384] mb-6 mt-24 mx-auto flex justify-center items-center rounded-full dark:bg-black"
           >
             <Text
               className="text-white font-bold"
@@ -351,9 +489,10 @@ const HotelBook = ({ route, email }) => {
             </Text>
           </TouchableOpacity>
         </View>
+        {renderRecommendations()}
       </View>
     </ScrollView>
   );
 };
 
-export default HotelBook;
+export default Bookings;

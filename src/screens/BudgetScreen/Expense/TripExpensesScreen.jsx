@@ -9,9 +9,6 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import CategoryChart from "../CategoryChart";
-import CategoryList from "../CategoryList";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import {
@@ -19,12 +16,13 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import EmptyList from "../../../components/emptyList";
-import randomImage from "../../../../assets/images/Budget/randomImage";
 import { categoryBG } from "../../../components/theme";
 import axios from "axios"; // Import Axios for making HTTP requests
 import { useEffect } from "react";
 import { BASE_URL } from "../../utils/config";
 import { AuthContext } from "../../../Context/AuthContext";
+//for making slide to delelte
+import { Swipeable } from "react-native-gesture-handler";
 
 const TripExpensesScreen = (props, { email }) => {
   const { userInfo } = useContext(AuthContext); //this is for getting username
@@ -47,6 +45,7 @@ const TripExpensesScreen = (props, { email }) => {
       const response = await axios.get(
         `${BASE_URL}BudgetExpenses/destination/${destination}/${userInfo.email}`
       );
+
       setExpenses(response.data);
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -75,6 +74,19 @@ const TripExpensesScreen = (props, { email }) => {
       return color;
     }
   };
+
+  //for making slide to delete
+  //  an expense
+  const deleteExpense = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}BudgetExpenses/${id}`);
+      // Remove the deleted item from the state
+      setExpenses(expenses.filter((expense) => expense.id !== id));
+    } catch (error) {
+      console.error("Error deleting expense:", error);
+    }
+  };
+
   return (
     <View className="bg-[#D7D9E8] h-full w-full dark:bg-neutral-900">
       <SafeAreaView
@@ -133,34 +145,67 @@ const TripExpensesScreen = (props, { email }) => {
               ListEmptyComponent={<EmptyList />} //this will be used when there is no data
               renderItem={({ item }) => {
                 return (
-                  <TouchableOpacity>
-                    <View>
-                      <View
-                        className="flex-row justify-between mt-3 items-center p-3 px-5  rounded-2xl mb-3"
+                  <Swipeable
+                    renderRightActions={() => (
+                      <TouchableOpacity
                         style={{
-                          backgroundColor: getRandomColor(),
-                          borderColor: "#6E6C6C",
-                          borderWidth: 1,
-                          overflow: "visible",
-                          shadowColor: "black",
-                          shadowRadius: 1,
-                          shadowOpacity: 4,
+                          backgroundColor: "red",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: 10,
+                          borderRadius: 10,
+                          height: 40,
+                          marginTop: 14,
+                          width: 358,
                         }}
-                        //   style={style.Shadow}
+                        onPress={() => deleteExpense(item.id)}
                       >
-                        <View>
-                          <Text className="font-bold text-white ">
-                            {item.title}
-                          </Text>
-                        </View>
-                        <View>
-                          <Text className="font-bold text-white">
-                            Rs {item.amount}
-                          </Text>
+                        <Text
+                          style={{ color: "white" }}
+                          className="font-bold  ml-72 "
+                        >
+                          Delete
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  >
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("UpdateExpenses", {
+                          destination: destination,
+                          expense: item,
+                        })
+                      }
+                    >
+                      <View>
+                        <View
+                          className="flex-row justify-between mt-3 items-center p-3 px-5  rounded-2xl mb-3"
+                          style={{
+                            backgroundColor: getRandomColor(),
+                            borderColor: "#6E6C6C",
+                            borderWidth: 1,
+                            overflow: "visible",
+                            shadowColor: "black",
+                            shadowRadius: 1,
+                            shadowOpacity: 4,
+                          }}
+                          //   style={style.Shadow}
+                        >
+                          <View>
+                            <Text className="font-bold text-white ">
+                              {item.title}
+                              {console.log(item.id)}
+                            </Text>
+                          </View>
+                          <View>
+                            <Text className="font-bold text-white">
+                              Rs {item.amount}
+                            </Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                  </Swipeable>
                 );
               }}
             />

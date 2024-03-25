@@ -92,7 +92,10 @@ const LoginScreen = ({ navigation }) => {
           />
           {/* forget button */}
 
-          <TouchableOpacity className="flex items-end mb-5 mr-5">
+          <TouchableOpacity
+            className="flex items-end mb-5 mr-5"
+            onPress={() => navigation.navigate("ForgetPassword")}
+          >
             <Text className="text-white font-light">Forget Password</Text>
           </TouchableOpacity>
 

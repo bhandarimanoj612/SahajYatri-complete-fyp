@@ -23,7 +23,7 @@ const SeachScreen = ({ setIsSearching }) => {
   const handleSearch = () => {
     //GET request to the backend API with search criteria
     axios
-      .get(`${BASE_URL}VehicleSearch?name=${searchQuery}`)
+      .get(`${BASE_URL}Search?Name=${searchQuery}`)
       .then((response) => {
         setSearchResults(response.data);
         navigation.navigate("SearchResultScreen", { results: response.data });

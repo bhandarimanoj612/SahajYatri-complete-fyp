@@ -15,7 +15,10 @@ const Info = ({ email }) => {
   const { colorScheme, toggleColorScheme } = useColorScheme(); //we are using tailwind so we need native colors scheme
   console.log(colorScheme);
   const { userInfo } = useContext(AuthContext);
-
+  const { logout } = useContext(AuthContext);
+  const handleReset = async () => {
+    await logout();
+  };
   const navigation = useNavigation();
   return (
     <View className="p-2 mb-28  dark:bg-neutral-950">
@@ -39,7 +42,7 @@ const Info = ({ email }) => {
       {/* Dark Mode */}
       <View>
         <TouchableOpacity
-          className="bg-white mt-2 p-4 rounded-2xl  flex-row justify-between dark:bg-neutral-800 "
+          className="bg-white mt-2 p-4 rounded-2xl flex-row justify-between dark:bg-neutral-800"
           onPress={toggleColorScheme}
           style={{
             shadowColor: "black",
@@ -48,7 +51,7 @@ const Info = ({ email }) => {
             shadowOpacity: 1,
           }}
         >
-          <Text className="ml-20 font-bold text-black dark:text-white  ">
+          <Text className="ml-20 font-bold text-black dark:text-white    ">
             Dark
           </Text>
           <Switch
@@ -107,6 +110,26 @@ const Info = ({ email }) => {
             Get Help
           </Text>
           <Icon name="phone" size={24} color="#2B3384" />
+        </TouchableOpacity>
+      </View>
+      {/* logout */}
+      <View>
+        <TouchableOpacity
+          onPress={handleReset}
+          className="bg-white mt-2 p-4 rounded-2xl flex-row justify-between dark:bg-neutral-800"
+          // onPress={}
+          style={{
+            shadowColor: "black",
+            shadowRadius: 1,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+          }}
+        >
+          <Text className="ml-20 font-bold text-red-600 dark:text-red-600 ">
+            Log Out
+          </Text>
+          <Icon name="logout" size={24} color="red" onPress={handleReset} />
+          {/* #2B3384 */}
         </TouchableOpacity>
       </View>
     </View>

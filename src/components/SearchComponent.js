@@ -23,9 +23,10 @@ const SearchComponent = ({ setIsSearching, onSearch }) => {
 
   const handleSearch = () => {
     axios
-      .get(`${BASE_URL}HotelSearch?name=${searchQuery}`)
+      .get(`${BASE_URL}Search?Name=${searchQuery}`)
       .then((response) => {
         onSearch(response.data);
+        console.log(response.data);
         setIsSearching(true);
       })
       .catch((error) => {

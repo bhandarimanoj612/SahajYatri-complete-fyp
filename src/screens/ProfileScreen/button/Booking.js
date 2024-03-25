@@ -13,9 +13,12 @@ import { placeData } from "../../../Dummy/PlaceList";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
 import randomImage from "../../../../assets/images/Budget/randomImage";
-
+import EmptyList from "../../../components/emptyList";
+import { AuthContext } from "../../../Context/AuthContext";
+import { useContext } from "react";
 // create a component
 const Booking = () => {
+  const { userInfo, userName } = useContext(AuthContext);
   // const [favouriteIndexes, setFavouriteIndexes] = useState([]);
   const navigation = useNavigation();
 
@@ -37,17 +40,22 @@ const Booking = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}HotelBooking/user/Manoj`);
+      const response = await axios.get(`${BASE_URL}Booking/user/${userName}`);
       setBookings(response.data);
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }
   };
+  // Assuming 'results' contains 'hotels', 'travel', and 'vehicles' keys
+  const allResults = Object.values(bookings).flat(); // Combine all arrays into one
+  console.log(allResults);
   return (
     <View className="bg-white   dark:bg-neutral-950 " style={{ height: 430 }}>
       <FlatList
-        data={bookings}
+        data={allResults}
         horizontal
+        ListEmptyComponent={<EmptyList />}
+        keyExtractor={(item, index) => `${item.id}_${typeof item}_${index}`} //for making warnning remove
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => {
           // const isFavouri
@@ -65,7 +73,7 @@ const Booking = () => {
               >
                 <Image
                   //   styles={styles.Shadow}
-                  source={randomImage()}
+                  source={{ uri: item.image }}
                   className="absolute "
                   style={{
                     height: wp(50),
@@ -79,8 +87,8 @@ const Booking = () => {
                   style={{
                     width: wp(40),
                     height: hp(20),
-                    borderBottomLeftRadius: 22,
-                    borderBottomRightRadius: 22,
+                    borderBottomLeftRadius: 19,
+                    borderBottomRightRadius: 19,
                   }}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
@@ -99,7 +107,7 @@ const Booking = () => {
                   style={{ fontSize: wp(4) }}
                   className="text-white font-extrabold "
                 >
-                  {item.hotelName}
+                  {item.name}
                 </Text>
                 <Text
                   style={{ fontSize: wp(3) }}

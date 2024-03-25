@@ -26,13 +26,16 @@ const RecommendedScreen = () => {
 
   const fetchRecommendedHotels = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}HotelList/recommend`);
+      const response = await axios.get(`${BASE_URL}Search/recommendation`);
       setRecommendedHotels(response.data);
     } catch (error) {
       console.error("Error fetching recommended hotels: ", error);
     }
   };
 
+  // Assuming 'results' contains 'hotels', 'travel', and 'vehicles' keys
+  const allResults = Object.values(recommendedHotels).flat(); // Combine all arrays into one
+  console.log(allResults);
   return (
     <View
       className="dark:bg-neutral-900
@@ -66,10 +69,10 @@ const RecommendedScreen = () => {
       </SafeAreaView>
       <View style={styles.container} className=" bg-[#fff] dark:bg-neutral-800">
         <FlatList
-          data={recommendedHotels}
+          data={allResults}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("HotelBook", { item })}
+              onPress={() => navigation.navigate("Bookings", { item })}
             >
               <View
                 style={styles.hotelContainer}
@@ -90,7 +93,7 @@ const RecommendedScreen = () => {
               </View>
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => `${item.id}_${typeof item}_${index}`} //for making warnning remove
         />
       </View>
     </View>

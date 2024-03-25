@@ -1,77 +1,130 @@
-//import liraries
-import React, { Component, useContext } from "react";
-import { View, Text, StyleSheet, Image, Alert, FlatList } from "react-native";
-import { Button } from "react-native";
-import { ScrollView } from "react-native";
-import { useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  StyleSheet,
+} from "react-native";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import randomImage from "../../../assets/images/Budget/randomImage";
 import EmptyList from "../../components/emptyList";
 import axios from "axios";
 import { BASE_URL } from "../utils/config";
-import { AuthContext, AuthProvider } from "../../Context/AuthContext";
-import { useColorScheme } from "nativewind";
+import { AuthContext } from "../../Context/AuthContext";
+import { Swipeable } from "react-native-gesture-handler";
+import LoginModal from "../../components/LoginModal";
 
-// create a component
-const CategoryList = ({ email }) => {
-  //for using dark mode we are using native wind colors steams
-  const { colorScheme, toggleColorScheme } = useColorScheme(); //we are using tailwind so we need native colors scheme
+const CategoryList = () => {
   const { userInfo } = useContext(AuthContext);
+  const [showLoginModal, setShowLoginModal] = useState(false); // State to control modal visibility
   const [trips, setTrips] = useState([]);
-
+  const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) fetchTrips(); //this isfocused hook will trigger to make update
+    if (isFocused) fetchTrips();
   }, [isFocused]);
+
   const fetchTrips = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}BudgetTrip/user/${userInfo.email}`
-      );
-      setTrips(response.data);
+      if (userInfo && userInfo.email) {
+        const response = await axios.get(
+          `${BASE_URL}BudgetTrip/user/${userInfo.email}`
+        );
+        setTrips(response.data);
+      } else {
+        setShowLoginModal(true); // Show login modal if user is not logged in or email is empty
+        console.error("User information not available.");
+      }
     } catch (error) {
       console.error("Error fetching trips:", error);
     }
   };
-  const navigation = useNavigation();
+
+  // Function to handle login button press
+  const handleLoginPress = () => {
+    setShowLoginModal(false); // Close the modal
+    navigation.navigate("LoginScreen"); // Navigate to the login screen
+  };
+
+  const deleteTrip = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}BudgetTrip/${id}`);
+      setTrips(trips.filter((trip) => trip.id !== id));
+    } catch (error) {
+      console.error("Error deleting trip:", error);
+    }
+  };
 
   return (
     <View>
-      <View className="pt-4 bg-white dark:bg-neutral-800">
+      <LoginModal visible={showLoginModal} onPressLogin={handleLoginPress} />
+      <View className="pt-4 bg-white dark:bg-neutral-800 mb-60">
         <View className="flex-row justify-between">
           <View className="">
             <Text className="dark:text-white"> Recent Trip:</Text>
           </View>
-          <View className="  " style={{ paddingRight: 16 }}>
-            <TouchableOpacity
-              style={{
-                borderRadius: 10,
-                backgroundColor: "#2B3384",
-              }}
-              onPress={() => navigation.navigate("AddTrip")}
-            >
-              <Text className=" text-white p-2  "> Add Trip</Text>
-            </TouchableOpacity>
+          <View className="m-3" style={{ paddingRight: 16 }}>
+            {userInfo && userInfo.email ? (
+              <TouchableOpacity
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: "#2B3384",
+                }}
+                onPress={() => navigation.navigate("AddTrip")}
+              >
+                <Text className="text-white p-2"> Add Trip</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  borderRadius: 10,
+                  backgroundColor: "#2B3384",
+                }}
+                onPress={() => navigation.navigate("Login")}
+              >
+                <Text className="text-white p-2"> Go to Login</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
-        {/* for adding trips   */}
-        <View className="px-4 mt-4 space-y-4 " style={{ height: 430 }}>
+        {trips.length > 0 ? (
           <FlatList
             numColumns={2}
             columnWrapperStyle={{
               justifyContent: "space-between",
             }}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
-            // data={[]}
             data={trips}
-            ListEmptyComponent={<EmptyList />} //this will be used when there is no data
-            renderItem={({ item }) => {
-              return (
+            renderItem={({ item }) => (
+              <Swipeable
+                renderRightActions={() => (
+                  <TouchableOpacity
+                    onPress={() => deleteTrip(item.id)}
+                    style={{
+                      backgroundColor: "red",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: 10,
+                      height: 160,
+                      marginTop: 10,
+                      width: 150,
+                      borderRadius: 20,
+                      borderColor: "black",
+                      borderWidth: 1,
+                    }}
+                  >
+                    <Text className="text-white text-xl font-light">
+                      Delete
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              >
                 <TouchableOpacity
                   style={styles.Shadow}
                   onPress={() =>
@@ -80,12 +133,11 @@ const CategoryList = ({ email }) => {
                       city: item.city,
                       destination: item.destination,
                     })
-                  } //I AM CONFUSED HERE SHOUDL BE TRIPS I THINK
-                  className="bg-gray-100 p-2 rounded-2xl mb-8 shadow-sm h-48 dark:bg-neutral-800 s"
+                  }
+                  className="mr-3 bg-gray-100 p-2 rounded-2xl mb-8 shadow-sm h-48 dark:bg-neutral-800"
                 >
                   <View>
-                    <Image source={randomImage()} className="w-36 h-28 mb-2 " />
-
+                    <Image source={randomImage()} className="w-36 h-28 mb-2" />
                     <Text className="text-black font-bold dark:text-white">
                       {item.city}
                     </Text>
@@ -94,18 +146,18 @@ const CategoryList = ({ email }) => {
                     </Text>
                   </View>
                 </TouchableOpacity>
-              );
-            }}
+              </Swipeable>
+            )}
           />
-        </View>
+        ) : (
+          <EmptyList />
+        )}
       </View>
     </View>
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
-  // for adding inner shadow in text field
   Shadow: {
     borderColor: "#2B3384",
     borderWidth: 1,
@@ -116,5 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default CategoryList;

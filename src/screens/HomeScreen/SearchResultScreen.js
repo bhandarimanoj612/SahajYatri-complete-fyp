@@ -13,10 +13,26 @@ import {
 } from "react-native-responsive-screen";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
+
+import EmptySearch from "../../components/emptySearch";
 const SearchResultScreen = ({ results, setIsSearching }) => {
   const navigation = useNavigation();
+
+  // Assuming 'results' contains 'hotels', 'travel', and 'vehicles' keys
+  const allResults = Object.values(results).flat(); // Combine all arrays into one
+  console.log(allResults);
+  // Render the empty state component if allResults is empty
+  if (allResults.length === 0) {
+    return (
+      <View style={styles.emptyStateContainer}>
+        <TouchableOpacity onPress={() => setIsSearching(false)}>
+          <EmptySearch />
+        </TouchableOpacity>
+      </View>
+    );
+  }
   return (
-    <View>
+    <View className="mb-72">
       <TouchableOpacity
         onPress={() => setIsSearching(false)}
         className="p-2 mr-5 ml-5 rounded-2xl dark:bg-neutral-700 "
@@ -25,14 +41,14 @@ const SearchResultScreen = ({ results, setIsSearching }) => {
         <ChevronLeftIcon size={wp(7)} strokeWidth={4} color="black" />
       </TouchableOpacity>
       <FlatList
-        data={results}
+        data={allResults}
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity
               style={styles.resultItem}
               className="ml-5 mr-5 rounded-2xl dark:bg-neutral-700 "
               onPress={() => {
-                navigation.navigate("HotelBook", { item });
+                navigation.navigate("Bookings", { item });
               }}
             >
               <Image source={{ uri: item.image }} style={styles.image} />
@@ -47,7 +63,7 @@ const SearchResultScreen = ({ results, setIsSearching }) => {
             </TouchableOpacity>
           </View>
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `${item.id}_${typeof item}_${index}`} //for making warnning remove
       />
     </View>
   );

@@ -7,9 +7,9 @@ import {
 } from "react-native-responsive-screen";
 
 const All = () => {
-  const sortData = ["All", "Popular", "Recommended"];
+  const sortData = ["All"];
   //   making bottom look good
-  const [activeAll, setActive] = useState("Popular");
+  const [activeAll, setActive] = useState("All");
   return (
     <View
       style={style.Shadow}

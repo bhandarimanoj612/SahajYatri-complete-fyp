@@ -96,10 +96,8 @@ const RegisterScreen = () => {
             onPress={toggleShowPassword}
             style={style.icon}
           />
-          {/* forget button */}
-          <TouchableOpacity className="flex items-end mb-5 mr-5">
-            <Text className="text-white font-light">Forget Password</Text>
-          </TouchableOpacity>
+
+          <View className="flex items-end mb-5 mr-5"></View>
           {/* sign in button */}
           <TouchableOpacity
             style={style.Shadow2}

@@ -7,7 +7,6 @@ import { getItem } from "../screens/utils/asyncStorage.js";
 import LoginScreen from "../screens/LoginSignup/LoginScreen.js";
 import Budget from "../screens/BudgetScreen/Expense/Budget.jsx";
 import RegisterScreen from "../screens/LoginSignup/RegisterScreen.js";
-import TravelPlacesScreen from "../screens/HomeScreen/TravelPlacesScreen.js";
 import PaymentScreen from "../screens/HomeScreen/Payment/PaymentScreen.js";
 import HelpPage from "../screens/ProfileScreen/button/HelpPage.js";
 import SafetyRulesPage from "../screens/ProfileScreen/button/SafetyRulesPage.js";
@@ -22,20 +21,22 @@ import UserProfile from "../screens/ProfileScreen/UserProfile.js";
 import { AuthContext } from "../Context/AuthContext.js";
 import HomeScreen from "../screens/HomeScreen/HomeScreen.js";
 import SearchResultScreen from "../screens/HomeScreen/SearchResultScreen.js";
-import SearchHome from "../screens/HomeScreen/SearchHome.js";
 import ChatHome from "../screens/ChatScreen/ChatHome.jsx";
 import Friend from "../screens/ChatScreen/Chat/Friend.jsx";
 import Auth from "../screens/ChatScreen/Chat/Auth.jsx";
 import GroupPage from "../screens/ChatScreen/Chat/GroupPage.jsx";
 import ChatScreen from "../screens/ChatScreen/Chat/ChatScreen.jsx";
-import HotelBook from "../screens/HomeScreen/Booking/HotelBook.jsx";
-import VehicleBook from "../screens/HomeScreen/Booking/VehicleBook.jsx";
-import TravelBook from "../screens/HomeScreen/Booking/TravelBook.jsx";
 import BookingDetails from "../screens/ProfileScreen/button/BookingDetails/BookingDetails.jsx";
 import ProfileHome from "../screens/ProfileScreen/ProfileHome.js";
 import PopularScreen from "../screens/HomeScreen/Popular/PopularScreen.jsx";
 import RecommendScreen from "../screens/HomeScreen/Popular/RecommendScreen.jsx";
 import PrivateMessage from "../screens/ChatScreen/Message/PrivateMessage.jsx";
+import ForgetPassword from "../screens/LoginSignup/ForgetPassword.jsx";
+import ResetPasswordScreen from "../screens/LoginSignup/ResetPasswordScreen.jsx";
+import Bookings from "../screens/HomeScreen/Booking/Bookings.jsx";
+import UpdateExpenses from "../screens/BudgetScreen/Expense/UpdateExpenses.jsx";
+import Friends from "../screens/ChatScreen/Private Message/Friends.jsx";
+import MessagePage from "../screens/ChatScreen/Private Message/MessagePage.js";
 
 const Stack = createStackNavigator();
 
@@ -110,12 +111,6 @@ const AppNavigation = () => {
           <Stack.Screen
             name="Budget"
             component={Budget}
-            options={{ headerShown: false }}
-          />
-          {/* travel place screen */}
-          <Stack.Screen
-            name="TravelPlacesScreen"
-            component={TravelPlacesScreen}
             options={{ headerShown: false }}
           />
           {/* comment review screen */}
@@ -200,11 +195,6 @@ const AppNavigation = () => {
             component={SearchResultScreen}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="SearchHome"
-            component={SearchHome}
-            options={{ headerShown: false }}
-          />
 
           <Stack.Screen
             name="ChatHome"
@@ -235,20 +225,11 @@ const AppNavigation = () => {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="HotelBook"
-            component={HotelBook}
+            name="Bookings"
+            component={Bookings}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="VehicleBook"
-            component={VehicleBook}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="TravelBook"
-            component={TravelBook}
-            options={{ headerShown: false }}
-          />
+
           <Stack.Screen
             name="BookingDetails"
             component={BookingDetails}
@@ -272,6 +253,31 @@ const AppNavigation = () => {
           <Stack.Screen
             name="PrivateMessage"
             component={PrivateMessage}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ForgetPassword"
+            component={ForgetPassword}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ResetPasswordScreen"
+            component={ResetPasswordScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="UpdateExpenses"
+            component={UpdateExpenses}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Friends"
+            component={Friends}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MessagePage"
+            component={MessagePage}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

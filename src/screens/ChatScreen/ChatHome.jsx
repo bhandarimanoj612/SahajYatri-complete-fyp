@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 import React from "react";
-import Auth from "./Chat/Auth";
-import PrivateMessage from "./Message/PrivateMessage";
+
+import Friends from "./Private Message/Friends";
 
 export default function ChatHome() {
   return (
@@ -12,8 +12,7 @@ export default function ChatHome() {
       </View>
 
       <View className="">
-        <Auth />
-        {/* <PrivateMessage /> */}
+        <Friends />
       </View>
     </SafeAreaView>
   );

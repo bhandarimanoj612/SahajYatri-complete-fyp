@@ -1,5 +1,5 @@
 export const BASE_URL =
-  "https://ef05-2001-df7-be80-1a47-1582-a53c-ee2d-8ff3.ngrok-free.app/api/";
+  "https://acd8-2001-df7-be80-324f-4885-1b09-2fc6-721b.ngrok-free.app/api/";
 
 export const Chat_Url =
-  "https://ef05-2001-df7-be80-1a47-1582-a53c-ee2d-8ff3.ngrok-free.app/hubs/chat";
+  "https://acd8-2001-df7-be80-324f-4885-1b09-2fc6-721b.ngrok-free.app/hubs/chat";

@@ -11,9 +11,6 @@ const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : "mt-10";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { MapPinIcon } from "react-native-heroicons/solid";
-import { Rating } from "react-native-ratings";
-import randomImage from "../../../../../assets/images/Budget/randomImage";
 
 // create a component
 const BookingDetails = ({ route }) => {
@@ -32,7 +29,7 @@ const BookingDetails = ({ route }) => {
       <View style={{}} className="bg-black flex-1 dark:bg-neutral-900 ">
         {/* image of the places  */}
         <Image
-          source={randomImage()}
+          source={{ uri: item.image }}
           style={{ width: wp(100), height: hp(55) }}
         />
         <StatusBar style={"light"} />
@@ -64,7 +61,7 @@ const BookingDetails = ({ route }) => {
                 style={{ fontSize: wp(7) }}
                 className="font-extrabold flex-1 text-black dark:text-white"
               >
-                {item.hotelName}
+                {item.name}
               </Text>
               {/* text */}
               <View>
@@ -96,8 +93,7 @@ const BookingDetails = ({ route }) => {
                 style={{ fontSize: wp(3.9) }}
                 className="text-black tracking-wide mb-2 dark:text-white"
               >
-                {" "}
-                {item?.checkInDate}
+                {item?.startDate}
               </Text>
             </View>
             <View className="flex-row ">
@@ -112,8 +108,7 @@ const BookingDetails = ({ route }) => {
                 style={{ fontSize: wp(3.9) }}
                 className="text-black tracking-wide mb-2 dark:text-white "
               >
-                {" "}
-                {item?.checkOutDate}
+                {item?.endDate}
               </Text>
             </View>
 
@@ -132,7 +127,6 @@ const BookingDetails = ({ route }) => {
                 style={{ fontSize: wp(5) }}
                 className="text-black tracking-wide mb-2 dark:text-white"
               >
-                {" "}
                 {item?.numberOfGuests}
               </Text>
             </View>
@@ -149,15 +143,14 @@ const BookingDetails = ({ route }) => {
                   }}
                   className="dark:text-white"
                 >
-                  User Name
+                  UserName
                 </Text>
                 <Text
                   style={{
-                    fontSize: wp(5),
-                    fontWeight: "bold",
+                    fontSize: wp(4),
                     marginBottom: 10,
                   }}
-                  className="dark:text-white"
+                  className="font-light dark:text-white "
                 >
                   {item.userName}
                 </Text>
@@ -175,13 +168,35 @@ const BookingDetails = ({ route }) => {
                 </Text>
                 <Text
                   style={{
-                    fontSize: wp(5),
+                    fontSize: wp(4),
                     fontWeight: "bold",
                     marginBottom: 10,
                     color: "red",
                   }}
                 >
-                  {item.pricePerNight}
+                  {item.pricePerDay}
+                </Text>
+              </View>
+              <View className="flex-row justify-between">
+                <Text
+                  className="dark:text-white"
+                  style={{
+                    fontSize: wp(5),
+                    fontWeight: "bold",
+                    marginBottom: 10,
+                  }}
+                >
+                  Number of Days
+                </Text>
+                <Text
+                  className="dark:text-white"
+                  style={{
+                    fontSize: wp(4),
+                    fontWeight: "bold",
+                    marginBottom: 10,
+                  }}
+                >
+                  {item.numberOfDays}
                 </Text>
               </View>
               <View className="flex-row justify-between">

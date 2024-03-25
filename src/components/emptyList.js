@@ -1,14 +1,18 @@
 //import liraries
 import React, { Component } from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
-
+import { View, Image, Text, StyleSheet, Dimensions } from "react-native";
+var { width, height } = Dimensions.get("window");
 // create a component
 const EmptyList = () => {
   return (
     <View className="flex justify-content items-center my-9 mr-10">
       <Image
-        source={require("../../assets/images/Budget/empty.png")}
-        className="w-48 h-48"
+        source={require("../../assets/images/NoData/noList.png")}
+        style={{
+          height: height * 0.22,
+          width: width * 0.72,
+          borderRadius: 60,
+        }}
       />
       <Text className="font-medium m-6 text-red-400">
         No Trip has been added{" "}

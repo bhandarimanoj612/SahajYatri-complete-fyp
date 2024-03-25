@@ -13,6 +13,7 @@ import axios from "axios";
 import randomImage from "../../../../assets/images/Budget/randomImage";
 import { BASE_URL } from "../../utils/config";
 import { AuthContext } from "../../../Context/AuthContext";
+import EmptyList from "../../../components/emptyList";
 
 // create a component
 const Trip = () => {
@@ -39,11 +40,13 @@ const Trip = () => {
       <FlatList
         data={tripData}
         horizontal
-        showsHorizontalScrollIndicator={false}
+        // numColumns={2}
+        // showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<EmptyList />} //this will be used when there is no data
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => {
           return (
-            <View className="p-3 mt-6  rounded-2xl m-2 mb-24 dark:bg-neutral-900 ">
+            <View className="p-3  rounded-2xl m-2  dark:bg-neutral-900 ">
               {console.log(index)}
               <View
                 styles={styles.Shadow}
@@ -67,8 +70,8 @@ const Trip = () => {
                   style={{
                     width: wp(40),
                     height: hp(20),
-                    borderBottomLeftRadius: 22,
-                    borderBottomRightRadius: 22,
+                    borderBottomLeftRadius: 19,
+                    borderBottomRightRadius: 19,
                   }}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}

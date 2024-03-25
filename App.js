@@ -5,8 +5,11 @@ import { useState } from "react";
 import { UserLocationContext } from "./src/Context/UserLocationContext";
 import { AuthProvider } from "./src/Context/AuthContext";
 import "react-native-url-polyfill/auto";
-
+import registerNNPushToken from "native-notify";
+import { StripeProvider } from "@stripe/stripe-react-native";
 export default function App() {
+  registerNNPushToken(20076, "AuOjF70XkEQgKvmMdGTrAt");
+
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -26,7 +29,9 @@ export default function App() {
   return (
     <UserLocationContext.Provider value={{ location, setLocation }}>
       <AuthProvider>
-        <AppNavigation />
+        <StripeProvider publishableKey="pk_test_51OxTFa1bF7cmrKQ8J8woJL2eOtCuyzpVdQbry7QEbrNyIsLQGxz8uDzuGGyDzjuJnvAzinCZDJhFiXBwfppyv5Sb00J7uWDpaO">
+          <AppNavigation />
+        </StripeProvider>
       </AuthProvider>
     </UserLocationContext.Provider>
   );

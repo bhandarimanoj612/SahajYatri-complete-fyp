@@ -3,16 +3,15 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import {
   View,
   TextInput,
-  Button,
   StyleSheet,
   Text,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import { ChevronDoubleLeftIcon } from "react-native-heroicons/outline";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Chat_Url } from "../../utils/config";
-import KeyboardAvodingContainer from "../../../components/KeyboardAvodingContainer";
 
 const GroupPage = ({ navigation }) => {
   const [connection, setConnection] = useState(null);
@@ -57,69 +56,98 @@ const GroupPage = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvodingContainer
+    <KeyboardAvoidingView
       style={styles.container}
-      className="dark:bg-neutral-800 "
+      className="dark:bg-neutral-900"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableOpacity
-        className="bg-gray-200 rounded-2xl"
         onPress={() => navigation.goBack()}
-        style={{ padding: 20, width: 350, marginBottom: 15 }}
+        style={styles.backButton}
+        className="bg-gray-200 rounded-2xl  dark:bg-neutral-700  mt-5 p-3"
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <ChevronDoubleLeftIcon size={wp(5)} strokeWidth={4} color="black" />
-          <Text style={{ marginLeft: 10, fontSize: 16, fontWeight: "bold" }}>
-            Back
-          </Text>
-        </View>
+        <ChevronDoubleLeftIcon size={wp(5)} strokeWidth={4} color="black" />
+        <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
-      <ScrollView style={styles.messagesContainer}>
+      <ScrollView
+        contentContainerStyle={styles.messagesContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {receivedMessages.map((msg, index) => (
-          <Text key={index} style={styles.messageText}>
-            {msg}
-          </Text>
+          <View key={index} style={styles.messageContainer}>
+            <Text style={styles.messageText}>{msg}</Text>
+          </View>
         ))}
       </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
+          className="dark:bg-white"
           style={styles.input}
           value={message}
           onChangeText={(text) => setMessage(text)}
           placeholder="Type a message..."
         />
-        <Button title="Send" onPress={sendMessage} />
+
+        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+          <Text style={styles.sendButtonText}>Send</Text>
+        </TouchableOpacity>
       </View>
-    </KeyboardAvodingContainer>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    flex: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  backButton: {
+    flexDirection: "row",
     alignItems: "center",
-    padding: 20,
-    marginTop: 50,
+    marginBottom: 20,
+  },
+  backButtonText: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "bold",
   },
   messagesContainer: {
-    marginBottom: 10,
-    width: "100%",
+    flexGrow: 1,
+  },
+  messageContainer: {
+    maxWidth: "80%",
+    marginVertical: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: "#e6e6e6",
   },
   messageText: {
     fontSize: 16,
-    marginBottom: 5,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    width: "100%",
+  },
+  sendButton: {
+    backgroundColor: "#2B3384",
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  sendButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
   },
   input: {
     flex: 1,
     height: 40,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 20,
+    paddingHorizontal: 15,
     marginRight: 10,
   },
 });

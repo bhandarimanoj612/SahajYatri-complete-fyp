@@ -30,12 +30,12 @@ const UserProfile = ({ email }) => {
     setIsFavorite(!isFavorite);
   };
   const { userName } = useContext(AuthContext);
-  const { logout } = useContext(AuthContext);
+  // const { logout } = useContext(AuthContext);
   // for making logout working
   const navigation = useNavigation();
-  const handleReset = async () => {
-    await logout();
-  };
+  // const handleReset = async () => {
+  //   await logout();
+  // };
 
   useEffect(() => {
     // Function to fetch user image path from AsyncStorage
@@ -63,23 +63,13 @@ const UserProfile = ({ email }) => {
     >
       <StatusBar style="light" />
       <View className="w-full dark:bg-neutral-950  flex-row  justify-between items-center mt-10">
-        <TouchableOpacity onPress={toggleFavorite} className="p-2">
+        <View></View>
+        <TouchableOpacity onPress={toggleFavorite} className="p-2 mr-4">
           <Icon
             name={isFavorite ? "bell-ring" : "bell-ring-outline"}
             size={24}
             color="#2B3384"
           />
-        </TouchableOpacity>
-
-        {/* for logout */}
-
-        <TouchableOpacity onPress={handleReset}>
-          <View className="p-4">
-            <Text className="text-red-400 ">
-              Logout
-              {/* <Icon name="logout" size={24} color="red" /> */}
-            </Text>
-          </View>
         </TouchableOpacity>
       </View>
 
@@ -111,7 +101,7 @@ const UserProfile = ({ email }) => {
         </View>
         <View></View>
         <View
-          className="mt-10 bg-white rounded-full items-center dark:bg-neutral-800  ml-14 mr-14"
+          className="mt-10 bg-white rounded-full items-center dark:bg-neutral-950  ml-14 mr-14"
           style={{
             shadowColor: "black",
             shadowRadius: 1,
@@ -164,13 +154,13 @@ const UserProfile = ({ email }) => {
         </View>
         <View className=" dark:bg-neutral-950">
           {viewMode == "booking" && (
-            <View className="dark:bg-neutral-900">{<Booking />}</View>
+            <View className="dark:bg-neutral-950">{<Booking />}</View>
           )}
           {viewMode == "trip" && (
-            <View className="dark:bg-neutral-900">{<Trip />}</View>
+            <View className="dark:bg-neutral-950">{<Trip />}</View>
           )}
           {viewMode == "info" && (
-            <View className="dark:bg-neutral-900">{<Info />}</View>
+            <View className="dark:bg-neutral-950">{<Info />}</View>
           )}
         </View>
       </View>

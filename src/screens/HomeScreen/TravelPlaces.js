@@ -41,23 +41,6 @@ export default function TravelPlaces({ item }) {
 
   return (
     <View>
-      <Text
-        className="text-black font-extralight rounded-2xl m-6 dark:text-white"
-        style={{
-          paddingLeft: wp(2),
-          fontSize: wp(4),
-          borderColor: "white",
-          borderWidth: 1,
-          shadowColor: "grey",
-          shadowRadius: 1,
-          borderRadius: 12,
-          shadowOpacity: 1,
-          overflow: "visible",
-          shadowOffset: { width: 1, height: 1 },
-        }}
-      >
-        Travel Destination
-      </Text>
       <FlatList
         data={places}
         horizontal
@@ -71,7 +54,7 @@ export default function TravelPlaces({ item }) {
                 style={{ height: wp(50), width: wp(45) }}
                 className="flex justify-end relative p-4 py-6 space-y-2 mb-5"
                 onPress={() => {
-                  navigation.navigate("TravelBook", { item });
+                  navigation.navigate("Bookings", { item });
                 }}
               >
                 <Image
